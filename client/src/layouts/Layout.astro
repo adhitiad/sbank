@@ -1,0 +1,40 @@
+---
+interface Props {
+  title: string;
+}
+import Navbar from "../components/Navbar.astro";
+export const prerender = true;
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+    />
+
+    <title>{title}</title>
+  </head>
+  <body
+    class="bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 font-inter"
+  >
+    <Navbar />
+    <slot />
+  </body>
+</html>
