@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,84 +7,110 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String      @id @default(cuid()) @map("_id")
-  name      String
-  email     String
-  password  String
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  Transaksi Transaksi[]
-}
-
-model Nasabah {
-  id        String @id @default(cuid()) @map("_id")
-  name      String
-  email     String
-  password  String
-  desa      String
-  kecamatan String
-  kota      String
-  provinsi  String
-  negara    String
-  alamat    String
-  kodepos   String
-  nomorhp   String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  Rekening  Rekening[]
-  Laporan   Laporan[]
-  Transaksi Transaksi[]
-  Kategori  Kategori[]
-}
-
-model Rekening {
-  id        String   @id @default(cuid()) @map("_id")
-  idnasabah String
-  nomor     String
-  saldo     Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  nasabah   Nasabah     @relation(fields: [idnasabah], references: [id])
-  Transaksi Transaksi[]
-}
-
 model Kategori {
-  id        String   @id @default(cuid()) @map("_id")
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Nasabah   Nasabah? @relation(fields: [nasabahId], references: [id])
-  nasabahId String?
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime
+  User        User[]
+  Laporan     Laporan[]
 }
 
 model Laporan {
-  id         String   @id @default(cuid()) @map("_id")
-  idnasabah  String
-  idrekening String
-  nominal    Int
-  kategori   String
-  status     String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  Nasabah    Nasabah? @relation(fields: [nasabahId], references: [id])
-  nasabahId  String?
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  total          Int
+  jumlah         Int
+  kredit         Int
+  debet          Int
+  jumlaTransaksi Int
+  totalSaldo     Int
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime
+  User           User[]
+  laporanId      String?   @db.ObjectId
+  Kategori       Kategori? @relation(fields: [kategoriId], references: [id])
+  kategoriId     String?   @db.ObjectId
+  Nasabah        Nasabah?  @relation(fields: [nasabahId], references: [id])
+  nasabahId      String?   @db.ObjectId
+  Rekening       Rekening? @relation(fields: [rekeningId], references: [id])
+  rekeningId     String?   @db.ObjectId
+}
+
+model Nasabah {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  email       String
+  description String
+  address     String
+  desa        String
+  kecamatan   String
+  kabupaten   String
+  provinsi    String
+  kodepos     String
+  phone       String
+  image       String
+  password    String
+  website     String
+  username    String
+
+  saldo Int
+
+  createdAt DateTime @default(now())
+
+  User       User[]
+  Laporan    Laporan[]
+  Rekening   Rekening? @relation(fields: [rekeningId], references: [id])
+  rekeningId String?   @db.ObjectId
+}
+
+model Rekening {
+  id      String @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  balance Int
+  cabang  String
+  norek   String
+
+  User    User[]
+  Laporan Laporan[]
+  Nasabah Nasabah[]
 }
 
 model Transaksi {
-  id         String   @id @default(cuid()) @map("_id")
-  idnasabah  String
-  iduser     String
-  nominal    Int
-  status     String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  idrekening String
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  date       DateTime
+  debit      Int
+  kredit     Int
+  keterangan String
+  kode       String
 
-  user     User     @relation(fields: [iduser], references: [id])
-  nasabah  Nasabah  @relation(fields: [idnasabah], references: [id])
-  rekening Rekening @relation(fields: [idrekening], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+
+  User User[]
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String
+  password  String
+  role      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime
+  Kategori  Kategori  @relation(fields: [kategoriId], references: [id])
+  Laporan   Laporan   @relation(fields: [laporanId], references: [id])
+  Nasabah   Nasabah   @relation(fields: [nasabahId], references: [id])
+  Rekening  Rekening  @relation(fields: [rekeningId], references: [id])
+  Transaksi Transaksi @relation(fields: [transaksiId], references: [id])
+
+  kategoriId  String @db.ObjectId
+  laporanId   String @db.ObjectId
+  nasabahId   String @db.ObjectId
+  rekeningId  String @db.ObjectId
+  transaksiId String @db.ObjectId
+}
+
+model sbank {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
 }

@@ -1,29 +1,25 @@
 node_modules
+# Keep environment variables out of version control
+.env
 
-.DS_Store
-.idea
+# Ignore .npmignore
+.npmignore
+
+# Ignore .vscode
 .vscode
-dist
+
+# Ignore build folder
 build
 
+# Ignore dist folder
+dist
 
-*.log
-*.out
+# Ignore .DS_Store
+.DS_Store 
+ 
+# Ignore package-lock.json
+package-lock.json
+yarn.lock
 
-*.lock
-*.zip
-*.gz
-*.tgz
-*.bz2
-*.xz
-*.7z
-
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-
-
-# MacOS
-*.dSYM
+# Ignore .git folder
+.git
