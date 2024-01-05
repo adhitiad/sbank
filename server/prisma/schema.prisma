@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String      @id @default(cuid()) @map("_id")
+  name      String
+  email     String
+  password  String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  Transaksi Transaksi[]
+}
+
+model Nasabah {
+  id        String @id @default(cuid()) @map("_id")
+  name      String
+  email     String
+  password  String
+  desa      String
+  kecamatan String
+  kota      String
+  provinsi  String
+  negara    String
+  alamat    String
+  kodepos   String
+  nomorhp   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Rekening  Rekening[]
+  Laporan   Laporan[]
+  Transaksi Transaksi[]
+  Kategori  Kategori[]
+}
+
+model Rekening {
+  id        String   @id @default(cuid()) @map("_id")
+  idnasabah String
+  nomor     String
+  saldo     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  nasabah   Nasabah     @relation(fields: [idnasabah], references: [id])
+  Transaksi Transaksi[]
+}
+
+model Kategori {
+  id        String   @id @default(cuid()) @map("_id")
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Nasabah   Nasabah? @relation(fields: [nasabahId], references: [id])
+  nasabahId String?
+}
+
+model Laporan {
+  id         String   @id @default(cuid()) @map("_id")
+  idnasabah  String
+  idrekening String
+  nominal    Int
+  kategori   String
+  status     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  Nasabah    Nasabah? @relation(fields: [nasabahId], references: [id])
+  nasabahId  String?
+}
+
+model Transaksi {
+  id         String   @id @default(cuid()) @map("_id")
+  idnasabah  String
+  iduser     String
+  nominal    Int
+  status     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  idrekening String
+
+  user     User     @relation(fields: [iduser], references: [id])
+  nasabah  Nasabah  @relation(fields: [idnasabah], references: [id])
+  rekening Rekening @relation(fields: [idrekening], references: [id])
+}
